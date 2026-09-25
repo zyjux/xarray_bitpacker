@@ -1,3 +1,4 @@
+import warnings
 from typing import Hashable, Literal
 
 import numpy as np
@@ -8,7 +9,7 @@ import xarray as xr
 class BitPacker:
     """DataArray extension allowing bitpacking of boolean arrays"""
 
-    def __init__(self, xarray_obj):
+    def __init__(self, xarray_obj: xr.DataArray):
         """"""
         self._obj = xarray_obj
 
@@ -51,10 +52,13 @@ class BitPacker:
         except ValueError as e:
             e.add_note(f"dim must be a dimension of array.")
             raise
-        if self._obj.coords[dim].dtype.type is not np.str_:
-            raise ValueError(
-                f"Dimension '{dim}' must have string dtype; got {self._obj.coords[dim].dtype}"
+        if dim in self._obj.coords:
+            flags_list = list(self._obj.coords[dim].astype(np.str_).values)
+        else:
+            warnings.warn(
+                f"No coordinates found for dimension {dim}, using default instead"
             )
+            flags_list = [f"flag_{i}" for i in range(self._obj.sizes[dim])]
         packed_data = np.packbits(self._obj.values, axis=axis, bitorder=bitorder)
         output_array = xr.DataArray(
             packed_data, dims=self._obj.dims, attrs=self._obj.attrs
@@ -67,7 +71,7 @@ class BitPacker:
         except KeyError:
             output_array.attrs["long_name"] = "Bit-packed flags"
         output_array.attrs["bitorder"] = bitorder
-        output_array.attrs["bit_flags"] = separator.join(self._obj.coords[dim].values)
+        output_array.attrs["bit_flags"] = separator.join(flags_list)
         output_array.attrs["bit_flag_separator"] = separator
         output_array.attrs["valid_range"] = [0, 255]
         return output_array

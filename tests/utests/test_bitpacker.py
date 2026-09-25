@@ -84,11 +84,11 @@ class Test_packbits(unittest.TestCase):
         }
         self.assertDictEqual(result.attrs, mock_attrs)
 
-    def test_NoCoordsForDim_RaiseException(self):
+    def test_NoCoordsForDim_UseDefaultFlagNames(self):
         fake_bool_data = np.full((2, 5), False)
         fake_array = xr.DataArray(fake_bool_data, dims=["flag", "y"])
-        with self.assertRaises(ValueError):
-            _ = fake_array.bitpacker.packbits("flag")
+        result = fake_array.bitpacker.packbits(dim="flag")
+        self.assertEqual(result.attrs["bit_flags"], "flag_0 | flag_1")
 
 
 class Test_unpackbits(unittest.TestCase):
