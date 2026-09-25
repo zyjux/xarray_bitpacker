@@ -1,0 +1,8 @@
+name: bitpacker_dev
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  - numpy
+  - xarray
