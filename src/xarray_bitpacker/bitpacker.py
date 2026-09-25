@@ -7,7 +7,15 @@ import xarray as xr
 
 @xr.register_dataarray_accessor("bitpacker")
 class BitPacker:
-    """DataArray extension allowing bitpacking of boolean arrays"""
+    """DataArray extension allowing bitpacking of boolean arrays
+
+    methods:
+        packbits(dim: Hashable, bitorder: Literal["big", "little"] = "big", separator:
+            str = " | "): Pack boolean array along given dimension using numpy packbits.
+
+        unpackbits(dim: Hashable, axis: int = -1): Unpack bit-packed DataArray into a
+            binary DataArray.
+    """
 
     def __init__(self, xarray_obj: xr.DataArray):
         """"""
@@ -15,7 +23,6 @@ class BitPacker:
 
     def packbits(
         self,
-        # array: xr.DataArray,
         dim: Hashable,
         bitorder: Literal["big", "little"] = "big",
         separator: str = " | ",
@@ -23,17 +30,19 @@ class BitPacker:
         """
         Pack boolean array along given dimension using numpy packbits
 
-        The DataArray this is called on must be a boolean array containing multiple
-        flags to be packed. The dimension listed in "dim" must index across the flags
-        to be packed. If "dim" has a corresponding coordinate of the same type, it will
-        be coerced to a string dtype and used as the name for each flag. No name (after
-        coercion) should contain the value of "separator" as a substring.
+        The DataArray this is called on must be a boolean or binary integer array
+        containing multiple flags to be packed. The dimension listed in "dim" must index
+        across the flags to be packed. If "dim" has a corresponding coordinate of the
+        same type, it will be coerced to a string dtype and used as the name for each
+        flag. No name (after coercion) should contain the value of "separator" as a
+        substring. If no coordinates for "dim" are available, a default of "flag_0",
+        "flag_1", etc. will be used.
 
         args:
             dim (hashable): Dimension of array over which bit packing should be
                 done.
             bitorder ("big" or "little"): The order in which to pack bits; see the docs
-                for numpy.packbits for more info.
+                for numpy.packbits for more info. Default is "big".
             separator (string): String used to separate flag names in the bitpacked
                 metadata. Default is " | ".
 
@@ -78,12 +87,11 @@ class BitPacker:
 
     def unpackbits(
         self,
-        # array: xr.DataArray,
         dim: Hashable,
         axis: int = -1,
     ) -> xr.DataArray:
         """
-        Unpack bit-packed DataArray into a boolean array
+        Unpack bit-packed DataArray into a binary DataArray
 
         The DataArray this is called on should be a bit-packed array of unsigned 8-bit
         integers in the format output by the "packbits" method of this class. Should
