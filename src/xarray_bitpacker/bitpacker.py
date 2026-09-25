@@ -78,7 +78,10 @@ class BitPacker:
                 "Bit-packed " + self._obj.attrs["long_name"]
             )
         except KeyError:
-            output_array.attrs["long_name"] = "Bit-packed flags"
+            if self._obj.name is not None:
+                output_array.attrs["long_name"] = "Bit-packed " + str(self._obj.name)
+            else:
+                output_array.attrs["long_name"] = "Bit-packed flags"
         output_array.attrs["bitorder"] = bitorder
         output_array.attrs["bit_flags"] = separator.join(flags_list)
         output_array.attrs["bit_flag_separator"] = separator
