@@ -79,6 +79,7 @@ class Test_packbits(unittest.TestCase):
             "long_name": "Bit-packed flags",
             "bitorder": "big",
             "bit_flags": "flag1 | flag2",
+            "bit_flag_separator": " | ",
             "valid_range": [0, 255],
         }
         self.assertDictEqual(result.attrs, mock_attrs)
@@ -99,6 +100,7 @@ class Test_unpackbits(unittest.TestCase):
                 "long_name": "Bit-packed flags",
                 "bitorder": "little",
                 "bit_flags": "flag_1 | flag_2",
+                "bit_flag_separator": " | ",
             },
         )
         result = bitpacker.unpackbits(fake_packed, dim="flag")
@@ -117,6 +119,7 @@ class Test_unpackbits(unittest.TestCase):
                 "long_name": "Bit-packed flags",
                 "bitorder": "little",
                 "bit_flags": "flag_1 | flag_2",
+                "bit_flag_separator": " | ",
             },
         )
         result = bitpacker.unpackbits(fake_packed, dim="flag")
@@ -135,6 +138,7 @@ class Test_unpackbits(unittest.TestCase):
                 "long_name": "Bit-packed flags",
                 "bitorder": "little",
                 "bit_flags": "flag_1 | flag_2",
+                "bit_flag_separator": " | ",
             },
         )
         result = bitpacker.unpackbits(fake_packed, dim="flag")
@@ -153,6 +157,7 @@ class Test_unpackbits(unittest.TestCase):
                 "long_name": "Bit-packed flags",
                 "bitorder": "big",
                 "bit_flags": "flag_1 | flag_2",
+                "bit_flag_separator": " | ",
             },
         )
         result = bitpacker.unpackbits(fake_packed, dim="flag")
@@ -171,6 +176,7 @@ class Test_unpackbits(unittest.TestCase):
                 "long_name": "Bit-packed flags",
                 "bitorder": "little",
                 "bit_flags": "flag_1 | flag_2",
+                "bit_flag_separator": " | ",
             },
         )
         result = bitpacker.unpackbits(fake_packed, dim="flag", axis=0)
@@ -189,6 +195,7 @@ class Test_unpackbits(unittest.TestCase):
                 "long_name": "Bit-packed flags",
                 "bitorder": "little",
                 "bit_flags": "flag_1 | flag_2",
+                "bit_flag_separator": " | ",
             },
         )
         result = bitpacker.unpackbits(fake_packed, dim="flag", axis=0)
