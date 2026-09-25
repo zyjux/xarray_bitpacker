@@ -1,4 +1,4 @@
-# xarray_bitpacker
+# Xarray Bitpacker
 An xarray DataArray accessor extension that leverages xarray's metadata to automate and enhance numpy's bitpacking functionality. 
 
 When saving data that consists of multiple boolean or binary arrays, it can be more efficient to "bit-pack" the data by recording the state of each flag as the state of a particular bit in a standard 8-bit unsigned integer.
