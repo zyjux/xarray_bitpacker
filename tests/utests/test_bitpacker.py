@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import xarray as xr
 
-from xarray_bitpacker import bitpacker
+import xarray_bitpacker  # type: ignore
 
 
 class Test_packbits(unittest.TestCase):
@@ -12,7 +12,7 @@ class Test_packbits(unittest.TestCase):
         fake_array = xr.DataArray(
             fake_bool_data, dims=["flag", "y"], coords={"flag": ["flag1", "flag2"]}
         )
-        result = bitpacker.packbits(fake_array, dim="flag")
+        result = fake_array.bitpacker.packbits(dim="flag")
         mock_result = xr.DataArray(np.zeros((5,), dtype=int), dims=["y"])
         xr.testing.assert_equal(result, mock_result)
 
@@ -21,7 +21,7 @@ class Test_packbits(unittest.TestCase):
         fake_array = xr.DataArray(
             fake_bool_data, dims=["flag", "y"], coords={"flag": ["flag1", "flag2"]}
         )
-        result = bitpacker.packbits(fake_array, dim="flag")
+        result = fake_array.bitpacker.packbits(dim="flag")
         mock_result = xr.DataArray(192 * np.ones((5,), dtype=int), dims=["y"])
         xr.testing.assert_equal(result, mock_result)
 
@@ -30,7 +30,7 @@ class Test_packbits(unittest.TestCase):
         fake_array = xr.DataArray(
             fake_bool_data, dims=["flag", "y"], coords={"flag": ["flag1", "flag2"]}
         )
-        result = bitpacker.packbits(fake_array, dim="flag")
+        result = fake_array.bitpacker.packbits(dim="flag")
         mock_result = xr.DataArray(128 * np.ones((5,), dtype=int), dims=["y"])
         xr.testing.assert_equal(result, mock_result)
 
@@ -39,7 +39,7 @@ class Test_packbits(unittest.TestCase):
         fake_array = xr.DataArray(
             fake_bool_data, dims=["flag", "y"], coords={"flag": ["flag1", "flag2"]}
         )
-        result = bitpacker.packbits(fake_array, dim="flag")
+        result = fake_array.bitpacker.packbits(dim="flag")
         mock_result = xr.DataArray(64 * np.ones((5,), dtype=int), dims=["y"])
         xr.testing.assert_equal(result, mock_result)
 
@@ -48,7 +48,7 @@ class Test_packbits(unittest.TestCase):
         fake_array = xr.DataArray(
             fake_bool_data, dims=["flag", "y"], coords={"flag": ["flag1", "flag2"]}
         )
-        result = bitpacker.packbits(fake_array, dim="flag", bitorder="little")
+        result = fake_array.bitpacker.packbits(dim="flag", bitorder="little")
         mock_result = xr.DataArray(2 * np.ones((5,), dtype=int), dims=["y"])
         xr.testing.assert_equal(result, mock_result)
 
@@ -58,14 +58,14 @@ class Test_packbits(unittest.TestCase):
             fake_bool_data, dims=["flag", "y"], coords={"flag": ["flag1", "flag2"]}
         )
         with self.assertRaises(ValueError):
-            _ = bitpacker.packbits(fake_array, "flags")
+            _ = fake_array.bitpacker.packbits("flags")
 
     def test_DimNot0thInListOfDimsAllFalse_AllZero(self):
         fake_bool_data = np.full((5, 2), False)
         fake_array = xr.DataArray(
             fake_bool_data, dims=["y", "flag"], coords={"flag": ["flag1", "flag2"]}
         )
-        result = bitpacker.packbits(fake_array, dim="flag")
+        result = fake_array.bitpacker.packbits(dim="flag")
         mock_result = xr.DataArray(np.zeros((5,), dtype=int), dims=["y"])
         xr.testing.assert_equal(result, mock_result)
 
@@ -74,7 +74,7 @@ class Test_packbits(unittest.TestCase):
         fake_array = xr.DataArray(
             fake_bool_data, dims=["y", "flag"], coords={"flag": ["flag1", "flag2"]}
         )
-        result = bitpacker.packbits(fake_array, dim="flag")
+        result = fake_array.bitpacker.packbits(dim="flag")
         mock_attrs = {
             "long_name": "Bit-packed flags",
             "bitorder": "big",
@@ -88,7 +88,7 @@ class Test_packbits(unittest.TestCase):
         fake_bool_data = np.full((2, 5), False)
         fake_array = xr.DataArray(fake_bool_data, dims=["flag", "y"])
         with self.assertRaises(ValueError):
-            _ = bitpacker.packbits(fake_array, "flag")
+            _ = fake_array.bitpacker.packbits("flag")
 
 
 class Test_unpackbits(unittest.TestCase):
@@ -103,7 +103,7 @@ class Test_unpackbits(unittest.TestCase):
                 "bit_flag_separator": " | ",
             },
         )
-        result = bitpacker.unpackbits(fake_packed, dim="flag")
+        result = fake_packed.bitpacker.unpackbits(dim="flag")
         mock_result = xr.DataArray(
             np.full((5, 2), False),
             dims=["y", "flag"],
@@ -122,7 +122,7 @@ class Test_unpackbits(unittest.TestCase):
                 "bit_flag_separator": " | ",
             },
         )
-        result = bitpacker.unpackbits(fake_packed, dim="flag")
+        result = fake_packed.bitpacker.unpackbits(dim="flag")
         mock_result = xr.DataArray(
             np.stack([np.full((5,), True), np.full((5,), False)], axis=-1),
             dims=["y", "flag"],
@@ -141,7 +141,7 @@ class Test_unpackbits(unittest.TestCase):
                 "bit_flag_separator": " | ",
             },
         )
-        result = bitpacker.unpackbits(fake_packed, dim="flag")
+        result = fake_packed.bitpacker.unpackbits(dim="flag")
         mock_result = xr.DataArray(
             np.full((5, 2), True),
             dims=["y", "flag"],
@@ -160,7 +160,7 @@ class Test_unpackbits(unittest.TestCase):
                 "bit_flag_separator": " | ",
             },
         )
-        result = bitpacker.unpackbits(fake_packed, dim="flag")
+        result = fake_packed.bitpacker.unpackbits(dim="flag")
         mock_result = xr.DataArray(
             np.stack([np.full((5,), True), np.full((5,), False)], axis=-1),
             dims=["y", "flag"],
@@ -179,7 +179,7 @@ class Test_unpackbits(unittest.TestCase):
                 "bit_flag_separator": " | ",
             },
         )
-        result = bitpacker.unpackbits(fake_packed, dim="flag", axis=0)
+        result = fake_packed.bitpacker.unpackbits(dim="flag", axis=0)
         mock_result = xr.DataArray(
             np.full((2, 5), False),
             dims=["flag", "y"],
@@ -198,7 +198,7 @@ class Test_unpackbits(unittest.TestCase):
                 "bit_flag_separator": " | ",
             },
         )
-        result = bitpacker.unpackbits(fake_packed, dim="flag", axis=0)
+        result = fake_packed.bitpacker.unpackbits(dim="flag", axis=0)
         with self.subTest("bitorder"):
             self.assertNotIn("bitorder", result.attrs)
         with self.subTest("bit_flags"):
